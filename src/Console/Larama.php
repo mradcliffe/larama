@@ -228,4 +228,15 @@ class Larama extends Application
         $commands = parent::getDefaultCommands();
         return $commands;
     }
+
+    /**
+     * Get the laravel environment.
+     *
+     * @return \Radcliffe\Larama\Config\Environment
+     *   The environment.
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
 }

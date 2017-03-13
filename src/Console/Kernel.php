@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      * {@inheritdoc}
      */
     protected $commands = [
-//        '\Radcliffe\Larama\Command\DatabaseDrop',
+        '\Radcliffe\Larama\Command\DatabaseDrop',
 //        '\Radcliffe\Larama\Command\DatabaseConsole',
 //        '\Radcliffe\Larama\Command\DatabaseDump',
     ];
