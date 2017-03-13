@@ -1,9 +1,6 @@
 <?php
 
-namespace Radcliffe\Larama;
-
-use Dotenv\Dotenv;
-use Radcliffe\Larama\Config\SiteAlias;
+namespace Radcliffe\Larama\Config;
 
 /**
  * Defines a Laravel site application environment.
@@ -20,6 +17,11 @@ class Environment
      * @var \Illuminate\Contracts\Container\Container
      */
     protected $container;
+
+    /**
+     * @var \Illuminate\Contracts\Console\Application
+     */
+    protected $artisan;
 
     /**
      * @var \Illuminate\Contracts\Events\Dispatcher
@@ -56,18 +58,29 @@ class Environment
             throw new \InvalidArgumentException('Could not find site directory.');
         }
 
-        try {
-            // Try to load the Laravel application container for the console.
-            require $this->getBaseDir() . '/vendor/autoload.php';
+        // Try to load the Laravel application container for the console.
+        require $this->getBaseDir() . '/vendor/autoload.php';
 
-            $this->container = new \Illuminate\Foundation\Application(realpath($this->getBaseDir()));
-            $this->container->singleton(
-                \Illuminate\Contracts\Console\Kernel::class,
-                \App\Console\Kernel::class
-            );
-        } catch (\Exception $e) {
-            throw $e;
+        // Bootstrap the Laravel application.
+        $this->container = new \Illuminate\Foundation\Application(realpath($this->getBaseDir()));
+        $this->container->singleton(
+            \Illuminate\Contracts\Console\Kernel::class,
+            \Radcliffe\Larama\Console\Kernel::class
+        );
+        $this->container->singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \Illuminate\Foundation\Exceptions\Handler::class
+        );
+        // db.connection
+    }
+
+    public function loadKernel()
+    {
+        if ($this->isLoaded()) {
+            return $this->container->make(\Illuminate\Contracts\Console\Kernel::class);
         }
+
+        throw new \RuntimeException('Laravel container not instantiated.');
     }
 
     public function canLoad()
@@ -77,7 +90,7 @@ class Environment
 
     public function isLoaded()
     {
-        return false;
+        return isset($this->container);
     }
 
     public function getBaseDir()

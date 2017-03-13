@@ -2,9 +2,15 @@
 
 namespace Radcliffe\Larama\Console;
 
+use Radcliffe\Larama\Config\Environment;
 use Radcliffe\Larama\Config\SiteAlias;
 use Radcliffe\Larama\Utility;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -45,6 +51,39 @@ class Larama extends Application
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        $alias = null;
+        $in = null === $input ? new ArgvInput : $input;
+        $out = null === $output ? new ConsoleOutput : $output;
+
+        if ($in->hasOption('site-alias')) {
+            // Attempt to load the environment from the site alias.
+            $alias_name = $in->getOption('site-alias');
+            if (isset($this->aliases[$alias_name])) {
+                $alias = $this->aliases[$alias_name];
+            }
+        }
+
+        // Attempt to load the environment.
+        $this->environment = $this->loadEnvironment($alias);
+
+        if ($this->environment) {
+            // Run the app through Laravel container.
+            $kernel = $this->environment->loadKernel();
+            $status = $kernel->handle($in, $out);
+            $kernel->terminate($in, $status);
+        } else {
+            // Run the app through this Symfony console application.
+            $status = parent::run($in, $out);
+        }
+
+        exit($status);
+    }
+
+    /**
      * Load configuration for a laravel site.
      */
     protected function loadConfiguration()
@@ -64,6 +103,26 @@ class Larama extends Application
         foreach ($configs as $config_file) {
             $info = Yaml::parse(file_get_contents($config_file));
             $this->aliases = $this->mergeConfiguration($info);
+        }
+    }
+
+    /**
+     * Environment factory.
+     *
+     * @param \Radcliffe\Larama\Config\SiteAlias $alias
+     *   An optional site alias.
+     *
+     * @return \Radcliffe\Larama\Config\Environment|null
+     *   A laravel environment or null if one could not be loaded.
+     */
+    protected function loadEnvironment(SiteAlias $alias = null)
+    {
+        try {
+            $environment = new Environment($alias);
+            $environment->loadEnvironment();
+            return $environment;
+        } catch (\Exception $e) {
+            return null;
         }
     }
 
@@ -144,9 +203,29 @@ class Larama extends Application
     public function getConfigDirectories()
     {
         if ($this->configDir === null) {
-            $this->configDir = $this->setConfigDirectories ();
+            $this->configDir = $this->setConfigDirectories();
         }
 
         return $this->configDir;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultInputDefinition()
+    {
+        $definition = parent::getDefaultInputDefinition();
+        $definition
+            ->addOption(new InputOption('--site-alias', '-@', InputOption::VALUE_OPTIONAL, 'A site alias name.'));
+        return $definition;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getDefaultCommands()
+    {
+        $commands = parent::getDefaultCommands();
+        return $commands;
     }
 }
