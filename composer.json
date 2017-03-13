@@ -1,0 +1,31 @@
+{
+    "name": "mradcliffe/laraman",
+    "description": "Laravel Manager",
+    "type": "library",
+    "license": "MIT",
+    "bin": ["app/laraman"],
+    "authors": [
+        {
+            "name": "Matthew Radcliffe",
+            "email": "mradcliffe@softpixel.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Radcliffe\\Laraman\\": "src",
+            "Radcliffe\\Tests\\Laraman\\": "tests/src"
+        }
+    },
+    "require": {
+        "symfony/console": "^3.1",
+        "symfony/yaml": "^3.2",
+        "vlucas/phpdotenv": "^2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
