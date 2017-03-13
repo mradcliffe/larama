@@ -2,6 +2,7 @@
 /nbproject/
 /.vscode/
 /vendor/
+/coverage/
 
 composer.lock
 .DS_Store

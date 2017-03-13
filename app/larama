@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Laraman application.
+ * Larama application.
  */
 
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
@@ -12,8 +12,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../../../autoload.php';
 }
 
-use Radcliffe\Laraman\Console\Laraman;
+use Radcliffe\Larama\Console\Larama;
 
-$app = new Laraman('laraman (Laravel Manager)', '0.1');
+$app = new Larama('larama (Laravel Manager)', '0.1');
 
 $app->run();

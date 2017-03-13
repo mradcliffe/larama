@@ -1,12 +1,15 @@
 <?php
 
-namespace Radcliffe\Laraman\Config;
+namespace Radcliffe\Larama\Config;
+
+use Radcliffe\Larama\Utility;
 
 /**
  * A configuration model for a Laravel application.
  */
 class SiteAlias
 {
+    use Utility;
 
     /**
      * @var string
@@ -35,6 +38,8 @@ class SiteAlias
      *   The site alias name.
      * @param array $values
      *   An array of values to set for the site.
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct($alias, array $values)
     {
@@ -49,6 +54,9 @@ class SiteAlias
         }
 
         if (isset($values['url'])) {
+            if (!self::isValidURL($values['url'])) {
+                throw new \InvalidArgumentException('Invalid URL.');
+            }
             $this->baseUrl = $values['url'];
         }
     }

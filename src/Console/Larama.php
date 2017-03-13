@@ -1,15 +1,16 @@
 <?php
 
-namespace Radcliffe\Laraman\Console;
+namespace Radcliffe\Larama\Console;
 
-use Radcliffe\Laraman\Utility;
+use Radcliffe\Larama\Config\SiteAlias;
+use Radcliffe\Larama\Utility;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Laraman application class.
+ * Larama application class.
  */
-class Laraman extends Application
+class Larama extends Application
 {
     use Utility;
 
@@ -19,14 +20,19 @@ class Laraman extends Application
     protected $container;
 
     /**
-     * @var \Radcliffe\Laraman\Environment
+     * @var \Radcliffe\Larama\Environment
      */
     protected $environment;
 
     /**
-     * @var \Radcliffe\Laraman\Config\SiteAlias[]
+     * @var \Radcliffe\Larama\Config\SiteAlias[]
      */
     protected $aliases;
+
+    /**
+     * @var array
+     */
+    protected $configDir;
 
     /**
      * {@inheritdoc}
@@ -34,6 +40,8 @@ class Laraman extends Application
     public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
         parent::__construct($name, $version);
+
+        $this->loadConfiguration();
     }
 
     /**
@@ -42,9 +50,8 @@ class Laraman extends Application
     protected function loadConfiguration()
     {
         $this->aliases = [];
-        $homedir = Utility::getHomeDirectory();
         // Find possible configuration files.
-        $directories = ['/etc/laraman/config', $homedir . '/.laraman/config', $homedir . '/.config/laraman'];
+        $directories = $this->getConfigDirectories();
         $configs = [];
 
         foreach ($directories as $directory_name) {
@@ -86,7 +93,8 @@ class Laraman extends Application
      *
      * @param $info
      *   Site alias configuration from configuration file.
-     * @return \Radcliffe\Laraman\Config\SiteAlias[]
+     *
+     * @return \Radcliffe\Larama\Config\SiteAlias[]
      *   An array of site aliases.
      */
     protected function mergeConfiguration($info)
@@ -101,5 +109,44 @@ class Laraman extends Application
         }
 
         return $aliases;
+    }
+
+    /**
+     * Set the configuration directories.
+     *
+     * By default: '/etc/laraman/config', '~/.laraman/config', and
+     * '~/.config/laraman'.
+     *
+     * @param array $directories
+     *   Additional directories to use.
+     *
+     * @return array
+     *   The config directories.
+     */
+    public function setConfigDirectories($directories = [])
+    {
+        $homedir = Utility::getHomeDirectory();
+        $this->configDir = $directories + [
+            '/etc/laraman/config',
+            $homedir . '/.laraman/config',
+            $homedir . '/.config/laraman',
+        ];
+
+        return $this->configDir;
+    }
+
+    /**
+     * Get the configuration directories.
+     *
+     * @return array
+     *   The config directories. By default, an empty array.
+     */
+    public function getConfigDirectories()
+    {
+        if ($this->configDir === null) {
+            $this->configDir = $this->setConfigDirectories ();
+        }
+
+        return $this->configDir;
     }
 }

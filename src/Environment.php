@@ -1,9 +1,9 @@
 <?php
 
-namespace Radcliffe\Laraman;
+namespace Radcliffe\Larama;
 
 use Dotenv\Dotenv;
-use Radcliffe\Laraman\Config\SiteAlias;
+use Radcliffe\Larama\Config\SiteAlias;
 
 /**
  * Defines a Laravel site application environment.
@@ -12,7 +12,7 @@ class Environment
 {
 
     /**
-     * @var \Radcliffe\Laraman\Config\SiteAlias
+     * @var \Radcliffe\Larama\Config\SiteAlias
      */
     protected $alias;
 
@@ -29,7 +29,7 @@ class Environment
     /**
      * Initialize method.
      *
-     * @param \Radcliffe\Laraman\Config\SiteAlias|NULL $alias
+     * @param \Radcliffe\Larama\Config\SiteAlias|NULL $alias
      *   A site alias to bootstrap.
      */
     public function __construct(SiteAlias $alias = null)

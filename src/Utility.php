@@ -1,6 +1,6 @@
 <?php
 
-namespace Radcliffe\Laraman;
+namespace Radcliffe\Larama;
 
 /**
  * Provides helper functions for the application.
@@ -8,6 +8,15 @@ namespace Radcliffe\Laraman;
 trait Utility
 {
 
+    /**
+     * Escape shell argument string.
+     *
+     * @param string $value
+     *   The shell arguments.
+     *
+     * @return string
+     *   Escaped shell arguments.
+     */
     public static function escapeShellArguments($value)
     {
         if (preg_match('[^a-zA-Z0-9.:/_-]*$|', $value)) {
@@ -19,6 +28,12 @@ trait Utility
         return $value;
     }
 
+    /**
+     * Get the user's home directory.
+     *
+     * @return string
+     *   A valid path.
+     */
     public static function getHomeDirectory()
     {
         $home = getenv('HOME');
@@ -28,5 +43,19 @@ trait Utility
             $home = $_SERVER['HOMEDRIVE'] .  $_SERVER['HOMEPATH'];
         }
         return $home;
+    }
+
+    /**
+     * Check if a valid web URL RFC 2396.
+     *
+     * @param string $url
+     *   An URL to check.
+     *
+     * @return bool
+     *   TRUE if the input URL is a valid URL.
+     */
+    public static function isValidURL($url)
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) && preg_match('/^(http|https)\:\/\//', $url);
     }
 }
