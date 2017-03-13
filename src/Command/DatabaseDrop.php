@@ -38,10 +38,33 @@ class DatabaseDrop extends Command {
             }
         }
 
+        // Get the database connection.
         $container = $this->getApplication()->getLaravel();
         $database = $container->make(\Illuminate\Database\DatabaseManager::class);
-        $connection = $database->connection();
-        var_dump($connection);
+        $connection = $database->connection()->getPdo();
+
+        // Find and drop tables.
+        /**
+        try {
+            $connection->beginTransaction();
+
+            $result = $connection->query('SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.tables');
+            $tables = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
+            if (!empty($tables)) {
+                // Note that tables are from the database and not from user
+                // input. Otherwise sanitization needs to happen.
+                foreach ($tables as $table) {
+                    $connection->query('DROP TABLE IF EXISTS ' . $table);
+                }
+            }
+            $connection->commit();
+        } catch (\PDOException $e) {
+            $connection->rollback();
+            $output->writeln($e->getMessage(), OutputInterface::NORMAL);
+        }
+         */
+
+
 
         return 0;
     }
