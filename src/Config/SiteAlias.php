@@ -70,8 +70,6 @@ class SiteAlias
                     'webroot' => $directory,
                 )
             );
-        } elseif ($directory !== '/' && realpath($directory . '/..')) {
-            return self::createFromDirectory(realpath($directory . '/..'));
         }
 
         // Fallback to an empty alias.

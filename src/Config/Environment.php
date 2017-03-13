@@ -44,6 +44,13 @@ class Environment
         }
     }
 
+    /**
+     * Load the Laravel environment.
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
     public function loadEnvironment()
     {
         if ($this->isLoaded()) {
@@ -63,15 +70,18 @@ class Environment
 
         // Bootstrap the Laravel application.
         $this->container = new \Illuminate\Foundation\Application(realpath($this->getBaseDir()));
+
+        // Load the console kernel into the container.
         $this->container->singleton(
             \Illuminate\Contracts\Console\Kernel::class,
             \Radcliffe\Larama\Console\Kernel::class
         );
+
+        // Load the framework debug handler into the container.
         $this->container->singleton(
             \Illuminate\Contracts\Debug\ExceptionHandler::class,
             \Illuminate\Foundation\Exceptions\Handler::class
         );
-        // db.connection
     }
 
     public function loadKernel()

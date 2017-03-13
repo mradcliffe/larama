@@ -1,6 +1,6 @@
 <?php
 
-namespace Radcliffe\Tests\Unit\Config\Larama;
+namespace Radcliffe\Tests\Larama\Unit\Config;
 
 use PHPUnit\Framework\TestCase;
 use Radcliffe\Larama\Config\SiteAlias;
@@ -49,5 +49,17 @@ class SiteAliasTest extends TestCase
     {
         $model = new SiteAlias('example', ['fqdn' => 'www.example.com']);
         $this->assertEquals('www.example.com', $model->getFQDN());
+    }
+
+    public function testCreateFromNullDirectory()
+    {
+        $model = SiteAlias::createFromDirectory('no-exist');
+        $this->assertInstanceOf('\Radcliffe\Larama\Config\SiteAlias', $model);
+    }
+
+    public function testCreateFromNonLaravelDirectory()
+    {
+        $model = SiteAlias::createFromDirectory('.');
+        $this->assertInstanceOf('\Radcliffe\Larama\Config\SiteAlias', $model);
     }
 }
