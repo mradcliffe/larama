@@ -26,7 +26,7 @@ class SiteAliasTest extends TestCase
 
     public function testGetBaseDir()
     {
-        $model = new SiteAlias('example', ['webroot' => '/var/www/example']);
+        $model = new SiteAlias('example', ['approot' => '/var/www/example']);
         $this->assertEquals('/var/www/example', $model->getBaseDir());
     }
 

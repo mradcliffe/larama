@@ -1,0 +1,9 @@
+aliases:
+    example:
+        approot: '/var/www/www.example.com'
+        url: 'http://example.com'
+        fqdn: 'www.example.com'
+    mysite:
+        approot: '/var/www/mysite.dev'
+        url: 'http://mysite.dev'
+        fqdn: 'mysite.dev'

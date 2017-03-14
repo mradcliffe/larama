@@ -33,19 +33,19 @@ class EnvironmentTest extends TestCase
 
     public function testGetBaseDir()
     {
-        $env = new Environment($this->getAlias('test', ['webroot' => 'not-exists']));
+        $env = new Environment($this->getAlias('test', ['approot' => 'not-exists']));
         $this->assertEquals('not-exists', $env->getBaseDir());
     }
 
     public function testCantLoad()
     {
-        $env = new Environment($this->getAlias('test', ['webroot' => 'not-exists']));
+        $env = new Environment($this->getAlias('test', ['approot' => 'not-exists']));
         $this->assertFalse($env->canLoad());
     }
 
     public function testContainerNotLoaded()
     {
-        $env = new Environment($this->getAlias('test', ['webroot' => 'not-exists']));
+        $env = new Environment($this->getAlias('test', ['approot' => 'not-exists']));
         $this->assertFalse($env->isLoaded());
     }
 

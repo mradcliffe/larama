@@ -24,7 +24,7 @@ class SiteAlias
     /**
      * @var string
      */
-    protected $webRoot;
+    protected $appRoot;
 
     /**
      * @var string
@@ -49,8 +49,8 @@ class SiteAlias
             $this->fqdn = $values['fqdn'];
         }
 
-        if (isset($values['webroot'])) {
-            $this->webRoot = $values['webroot'];
+        if (isset($values['approot'])) {
+            $this->appRoot = $values['approot'];
         }
 
         if (isset($values['url'])) {
@@ -67,7 +67,7 @@ class SiteAlias
             return new static(
                 basename($directory),
                 array(
-                    'webroot' => $directory,
+                    'approot' => $directory,
                 )
             );
         }
@@ -99,7 +99,7 @@ class SiteAlias
      */
     public function getBaseDir()
     {
-        return $this->webRoot;
+        return $this->appRoot;
     }
 
     /**
