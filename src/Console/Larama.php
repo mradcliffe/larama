@@ -49,16 +49,6 @@ class Larama extends Application
 
         parent::__construct($name, $version);
 
-        $this
-            ->getDefinition()
-            ->addOptions([
-                new InputOption(
-                    'site-alias',
-                    '@',
-                    InputOption::VALUE_OPTIONAL,
-                    'Specify a site alias defined in an aliases file.'
-                )
-            ]);
         $this->setDefaultCommand('help');
     }
 
@@ -68,30 +58,12 @@ class Larama extends Application
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $alias = null;
-        $definition = $this->getDefinition();
-        $args = null;
+        $input = null === $input ? new ArgvInput() : $input;
+        $output = null === $output ? new ConsoleOutput : $output;
 
-        $hasDefaultCommand = false;
-        // Find if there is at least one argument provided.
-        foreach ($_SERVER['argv'] as $index => $arg) {
-            if ($index !== 0 && preg_match('/^[^\-]{1,2}/', $arg)) {
-                $hasDefaultCommand = true;
-                break;
-            }
-        }
-
-        // Copy argv into an array and tack on a default command because SymonyConsoleWTF.
-        if (!$hasDefaultCommand) {
-            $args = $_SERVER['argv'];
-            $args[] = 'list';
-        }
-
-        $in = null === $input ? new ArgvInput($args, $definition) : $input;
-        $out = null === $output ? new ConsoleOutput : $output;
-
-        if ($in->getOption('site-alias')) {
+        if ($input->hasParameterOption('--site-alias', true)) {
             // Attempt to load the environment from the site alias.
-            $alias_name = $in->getOption('site-alias');
+            $alias_name = $input->getParameterOption('--site-alias');
             if (isset($this->aliases[$alias_name])) {
                 $alias = $this->aliases[$alias_name];
             }
@@ -103,11 +75,11 @@ class Larama extends Application
         if ($this->environment) {
             // Run the app through Laravel container.
             $kernel = $this->environment->loadKernel();
-            $status = $kernel->handle($in, $out);
-            $kernel->terminate($in, $status);
+            $status = $kernel->handle($input, $output);
+            $kernel->terminate($input, $status);
         } else {
             // Run the app through this Symfony console application.
-            $status = parent::run($in, $out);
+            $status = parent::run($input, $output);
         }
 
         exit($status);
@@ -246,7 +218,7 @@ class Larama extends Application
     {
         $definition = parent::getDefaultInputDefinition();
         $definition
-            ->addOption(new InputOption('--site-alias', '-@', InputOption::VALUE_OPTIONAL, 'A site alias name.'));
+            ->addOption(new InputOption('site-alias', '', InputOption::VALUE_OPTIONAL, 'A site alias name.'));
         return $definition;
     }
 

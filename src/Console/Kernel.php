@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
             ->addOptions([
                 new InputOption(
                     'site-alias',
-                    '@',
+                    '',
                     InputOption::VALUE_OPTIONAL,
                     'Specify a site alias defined in an aliases file.'
                 )
