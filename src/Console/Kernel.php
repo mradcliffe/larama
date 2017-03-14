@@ -42,8 +42,7 @@ class Kernel extends ConsoleKernel
     protected function getArtisan()
     {
         $this->artisan = parent::getArtisan();
-        $this->artisan->setName('larama');
-        $this->artisan->setVersion('0.1');
+        $this->artisan->setName('artisan');
         $this->artisan
             ->getDefinition()
             ->addOptions([
