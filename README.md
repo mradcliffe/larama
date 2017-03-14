@@ -2,7 +2,7 @@
 
 larama is a standalone Symfony console application for Laravel.
 
-It borrows the "alias" concept from [drush](https://github.com/drush-ops/drush) so that you can run artisan commands from any directory for any site on a web server given a site alias. Additionally it provides convenience commands for artisan such as "db:cli", "db:drop", "db:dump" and "app:status".
+It borrows the "alias" concept and some other commands from [drush](https://github.com/drush-ops/drush) so that you can run artisan commands from any directory for any site on a web server given a site alias. Additionally it provides convenience commands for artisan such as "db:cli", "db:drop", "db:dump" and "app:status".
 
 ## Commands
 
@@ -65,3 +65,29 @@ PHP executable      : /usr/bin/php
 PHP configuration   : /etc/php-cli.ini
 PHP OS              : Linux
 ```
+
+## Aliases
+
+Alias files can be in one of the following directories:
+
+* `/etc/larama/config`
+* `$HOME/.larama/config`
+* `$HOME/.config/larama`
+
+
+### Alias File Example
+
+```yaml
+aliases:
+  example:
+    approot: '/var/www/example.com'
+    url: 'http://example.com'
+    fqdn: 'example.com'
+  local:
+    approot: '/var/www/local.example.com'
+    url: 'http://local.example.com'
+    fqdn: 'local.example.com'
+```
+
+And then you can use `larama --site-alias=example` to access the example.com application.
+
