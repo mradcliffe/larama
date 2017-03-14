@@ -45,9 +45,21 @@ class Larama extends Application
      */
     public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
     {
+        $this->loadConfiguration();
+
         parent::__construct($name, $version);
 
-        $this->loadConfiguration();
+        $this
+            ->getDefinition()
+            ->addOptions([
+                new InputOption(
+                    'site-alias',
+                    '@',
+                    InputOption::VALUE_OPTIONAL,
+                    'Specify a site alias defined in an aliases file.'
+                )
+            ]);
+        $this->setDefaultCommand('help');
     }
 
     /**
@@ -56,10 +68,28 @@ class Larama extends Application
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $alias = null;
-        $in = null === $input ? new ArgvInput : $input;
+        $definition = $this->getDefinition();
+        $args = null;
+
+        $hasDefaultCommand = false;
+        // Find if there is at least one argument provided.
+        foreach ($_SERVER['argv'] as $index => $arg) {
+            if ($index !== 0 && preg_match('/^[^\-]{1,2}/', $arg)) {
+                $hasDefaultCommand = true;
+                break;
+            }
+        }
+
+        // Copy argv into an array and tack on a default command because SymonyConsoleWTF.
+        if (!$hasDefaultCommand) {
+            $args = $_SERVER['argv'];
+            $args[] = 'help';
+        }
+
+        $in = null === $input ? new ArgvInput($args, $definition) : $input;
         $out = null === $output ? new ConsoleOutput : $output;
 
-        if ($in->hasOption('site-alias')) {
+        if ($in->getOption('site-alias')) {
             // Attempt to load the environment from the site alias.
             $alias_name = $in->getOption('site-alias');
             if (isset($this->aliases[$alias_name])) {
@@ -173,8 +203,8 @@ class Larama extends Application
     /**
      * Set the configuration directories.
      *
-     * By default: '/etc/laraman/config', '~/.laraman/config', and
-     * '~/.config/laraman'.
+     * By default: '/etc/larama/config', '~/.larama/config', and
+     * '~/.config/larama'.
      *
      * @param array $directories
      *   Additional directories to use.
@@ -186,9 +216,9 @@ class Larama extends Application
     {
         $homedir = Utility::getHomeDirectory();
         $this->configDir = $directories + [
-            '/etc/laraman/config',
-            $homedir . '/.laraman/config',
-            $homedir . '/.config/laraman',
+            '/etc/larama/config',
+            $homedir . '/.larama/config',
+            $homedir . '/.config/larama',
         ];
 
         return $this->configDir;
