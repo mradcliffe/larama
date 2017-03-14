@@ -2,6 +2,7 @@
 
 namespace Radcliffe\Larama\Console;
 
+use Radcliffe\Larama\Command\AppStatus;
 use Radcliffe\Larama\Config\Environment;
 use Radcliffe\Larama\Config\SiteAlias;
 use Radcliffe\Larama\Utility;
@@ -43,13 +44,11 @@ class Larama extends Application
     /**
      * {@inheritdoc}
      */
-    public function __construct($name = 'UNKNOWN', $version = 'UNKNOWN')
+    public function __construct($name = 'larama', $version = '0.1')
     {
         $this->loadConfiguration();
 
         parent::__construct($name, $version);
-
-        $this->setDefaultCommand('help');
     }
 
     /**
@@ -228,6 +227,7 @@ class Larama extends Application
     protected function getDefaultCommands()
     {
         $commands = parent::getDefaultCommands();
+        $commands[] = new AppStatus();
         return $commands;
     }
 

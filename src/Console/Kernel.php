@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         '\Radcliffe\Larama\Command\DatabaseDrop',
         '\Radcliffe\Larama\Command\DatabaseCLI',
         '\Radcliffe\Larama\Command\DatabaseDump',
+        '\Radcliffe\Larama\Command\AppStatus',
     ];
 
     /**
@@ -41,6 +42,8 @@ class Kernel extends ConsoleKernel
     protected function getArtisan()
     {
         $this->artisan = parent::getArtisan();
+        $this->artisan->setName('larama');
+        $this->artisan->setVersion('0.1');
         $this->artisan
             ->getDefinition()
             ->addOptions([
@@ -51,7 +54,6 @@ class Kernel extends ConsoleKernel
                     'Specify a site alias defined in an aliases file.'
                 )
             ]);
-        $this->artisan->setDefaultCommand('help');
         return $this->artisan;
     }
 }
