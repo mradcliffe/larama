@@ -4,6 +4,8 @@ larama is a standalone Symfony console application for Laravel.
 
 It borrows the "alias" concept and some other commands from [drush](https://github.com/drush-ops/drush) so that you can run artisan commands from any directory for any site on a web server given a site alias. Additionally it provides convenience commands for artisan such as "db:cli", "db:drop", "db:dump" and "app:status".
 
+If a site alias is detected, larama will attempt to bootstrap the Laravel application within that directory. This means that all default commands are available (but currently not application-added commands).
+
 ## Commands
 
 ### db:cli
