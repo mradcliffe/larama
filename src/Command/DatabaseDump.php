@@ -18,7 +18,7 @@ class DatabaseDump extends Command
         $this
             ->setName('db:dump')
             ->setDescription('Dump the database into a SQL file.')
-            ->addOption('--gzip', '', InputOption::VALUE_NONE, 'Compress the database dump.')
+            ->addOption('gzip', '', InputOption::VALUE_NONE, 'Compress the database dump.')
             ->addOption('result-file', '', InputOption::VALUE_OPTIONAL, 'Provide a the full path to the filename to save the dump.');
     }
 
