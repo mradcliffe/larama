@@ -83,7 +83,7 @@ class Larama extends Application
         // Copy argv into an array and tack on a default command because SymonyConsoleWTF.
         if (!$hasDefaultCommand) {
             $args = $_SERVER['argv'];
-            $args[] = 'help';
+            $args[] = 'list';
         }
 
         $in = null === $input ? new ArgvInput($args, $definition) : $input;
