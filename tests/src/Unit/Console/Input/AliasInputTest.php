@@ -4,7 +4,6 @@ namespace Radcliffe\Tests\Larama\Unit\Console\Input;
 
 use PHPUnit\Framework\TestCase;
 use Radcliffe\Larama\Console\Input\AliasInput;
-use Radcliffe\Larama\Console\Larama;
 
 /**
  * Tests the replacement argv input class.
