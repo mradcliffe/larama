@@ -12,7 +12,7 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 /**
  * Drop all database tables without dropping the database.
  */
-class DatabaseDrop extends Command
+class DatabaseDropCommand extends Command
 {
 
     /**

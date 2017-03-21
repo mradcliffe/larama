@@ -2,14 +2,16 @@
 
 namespace Radcliffe\Larama\Console;
 
-use Radcliffe\Larama\Command\AppStatus;
+use Radcliffe\Larama\Command\AppStatusCommand;
+use Radcliffe\Larama\Command\HelpAliasCommand;
+use Radcliffe\Larama\Command\SiteAliasCommand;
 use Radcliffe\Larama\Config\Environment;
 use Radcliffe\Larama\Config\SiteAlias;
+use Radcliffe\Larama\Console\Input\AliasInput;
 use Radcliffe\Larama\Utility;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Command\ListCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -27,7 +29,7 @@ class Larama extends Application
     protected $container;
 
     /**
-     * @var \Radcliffe\Larama\Environment
+     * @var \Radcliffe\Larama\Config\Environment
      */
     protected $environment;
 
@@ -57,12 +59,12 @@ class Larama extends Application
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $alias = null;
-        $input = null === $input ? new ArgvInput() : $input;
+        $input = null === $input ? new AliasInput() : $input;
         $output = null === $output ? new ConsoleOutput : $output;
+        $alias_name = $input->getAlias();
 
-        if ($input->hasParameterOption('--site-alias', true)) {
+        if ($alias_name) {
             // Attempt to load the environment from the site alias.
-            $alias_name = $input->getParameterOption('--site-alias');
             if (isset($this->aliases[$alias_name])) {
                 $alias = $this->aliases[$alias_name];
             }
@@ -74,6 +76,10 @@ class Larama extends Application
         if ($this->environment) {
             // Run the app through Laravel container.
             $kernel = $this->environment->loadKernel();
+            if (!is_a($kernel, '\Radcliffe\Larama\Console\Kernel')) {
+                // Add the larama commands to the new kernel.
+            }
+
             $status = $kernel->handle($input, $output);
             $kernel->terminate($input, $status);
         } else {
@@ -116,7 +122,7 @@ class Larama extends Application
      * @return \Radcliffe\Larama\Config\Environment|null
      *   A laravel environment or null if one could not be loaded.
      */
-    protected function loadEnvironment(SiteAlias $alias = null)
+    public function loadEnvironment(SiteAlias $alias = null)
     {
         try {
             $environment = new Environment($alias);
@@ -213,22 +219,14 @@ class Larama extends Application
     /**
      * {@inheritdoc}
      */
-    protected function getDefaultInputDefinition()
-    {
-        $definition = parent::getDefaultInputDefinition();
-        $definition
-            ->addOption(new InputOption('site-alias', '', InputOption::VALUE_OPTIONAL, 'A site alias name.'));
-        return $definition;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getDefaultCommands()
     {
-        $commands = parent::getDefaultCommands();
-        $commands[] = new AppStatus();
-        return $commands;
+        return [
+            new HelpAliasCommand(),
+            new ListCommand(),
+            new AppStatusCommand(),
+            new SiteAliasCommand(),
+        ];
     }
 
     /**
@@ -240,5 +238,16 @@ class Larama extends Application
     public function getEnvironment()
     {
         return $this->environment;
+    }
+
+    /**
+     * Get the site aliases.
+     *
+     * @return \Radcliffe\Larama\Config\SiteAlias[]
+     *   An array of site aliases.
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 }

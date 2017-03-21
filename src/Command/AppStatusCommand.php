@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Display application status or general PHP status.
  */
-class AppStatus extends Command
+class AppStatusCommand extends Command
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class AppStatus extends Command
     public function configure()
     {
         $this
-            ->setName('app:status')
+            ->setName('status')
             ->setDescription('Provides a birds-eye view of the current Laravel installation, if any.');
     }
 
@@ -82,7 +82,8 @@ class AppStatus extends Command
      * @return int
      *   The maximum length of any of the labels to print.
      */
-    protected function getMaxPadWidth($names, $fieldMap) {
+    protected function getMaxPadWidth($names, $fieldMap)
+    {
         return array_reduce($names, function (&$result, $name) use ($fieldMap) {
             $label = $fieldMap[$name];
             if (strlen($label) > $result) {
@@ -98,7 +99,8 @@ class AppStatus extends Command
      * @return array
      *   A map of field names to labels.
      */
-    protected function getFieldMap() {
+    protected function getFieldMap()
+    {
         return [
             'laravel-version' => 'Laravel version',
             'app-name' => 'Site name',

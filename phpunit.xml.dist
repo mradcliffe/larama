@@ -14,7 +14,7 @@
             <directory>tests/src/Unit</directory>
         </testsuite>
         <testsuite name="Functional Tests">
-            <directory>tests/src/Application</directory>
+            <directory>tests/src/Functional</directory>
         </testsuite>
     </testsuites>
     <filter>
