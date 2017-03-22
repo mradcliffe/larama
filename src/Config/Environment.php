@@ -89,7 +89,7 @@ class Environment
         );
 
         // Inject the command provider into the container.
-        $this->container->register(LaramaCommandProvider::class, null, true);
+        $this->container->register(LaramaCommandProvider::class, [], true);
     }
 
     /**
