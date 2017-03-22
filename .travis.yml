@@ -3,6 +3,9 @@ language: php
 php:
   - 5.6
   - 7.0
+env:
+  - LARAVEL=5.3
+  - LARAVEL=5.4
 
 sudo: false
 
@@ -12,8 +15,19 @@ git:
 install:
   - composer install
 
+  # Install laravel project in a separate directory for functional tests.
+  - TESTDIR=$(pwd)
+  - cd ..
+  - composer create-project laravel/laravel=$LARAVEL laravel --prefer-dist
+  - LARAVELDIR=$(pwd)
+  - cd $TESTDIR
+
 script:
   - vendor/bin/phpunit --coverage-text=$TRAVIS_BUILD_DIR/coverage.txt
+
+  # Quick functional test of status.
+  - cd $LARAVELDIR
+  - $TESTDIR/app/larama status
 
 after_script:
   - head $TRAVIS_BUILD_DIR/coverage.txt
