@@ -23,7 +23,7 @@ install:
   - cd $TESTDIR
 
 script:
-  - vendor/bin/phpunit --coverage-text=$TRAVIS_BUILD_DIR/coverage.txt
+  - vendor/bin/phpunit --group larama,larama_functional --coverage-text=$TRAVIS_BUILD_DIR/coverage.txt
 
   # Quick functional test of status.
   - cd $LARAVELDIR

@@ -14,7 +14,7 @@
     "autoload": {
         "psr-4": {
             "Radcliffe\\Larama\\": "src",
-            "Radcliffe\\Tests\\Larama\\": "tests/src"
+            "Radcliffe\\Tests\\": "tests/src"
         }
     },
     "require": {
