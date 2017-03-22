@@ -14,7 +14,7 @@
     "autoload": {
         "psr-4": {
             "Radcliffe\\Larama\\": "src",
-            "Radcliffe\\Tests\\Larama\\": "tests/src"
+            "Radcliffe\\Tests\\": "tests/src"
         }
     },
     "require": {
@@ -23,7 +23,6 @@
         "vlucas/phpdotenv": "^2.4"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.0",
-        "laravel/framework": "^5.4"
+        "phpunit/phpunit": "^5.0"
     }
 }

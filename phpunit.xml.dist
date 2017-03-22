@@ -11,12 +11,17 @@
     </php>
     <testsuites>
         <testsuite name="Unit Tests">
-            <directory>tests/src/Unit</directory>
-        </testsuite>
-        <testsuite name="Functional Tests">
-            <directory>tests/src/Functional</directory>
+            <directory>tests/src</directory>
         </testsuite>
     </testsuites>
+    <groups>
+        <include>
+            <group>larama</group>
+        </include>
+        <exclude>
+            <group>larama_functional</group>
+        </exclude>
+    </groups>
     <filter>
         <whitelist>
             <directory>src</directory>

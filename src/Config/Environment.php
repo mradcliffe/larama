@@ -68,7 +68,7 @@ class Environment
         }
 
         // Try to load the Laravel application container for the console.
-        $loader = require_once $this->getBaseDir() . '/vendor/autoload.php';
+        $loader = require $this->getBaseDir() . '/vendor/autoload.php';
 
         $class_name = $this->findConsoleKernel($loader);
 
@@ -89,7 +89,7 @@ class Environment
         );
 
         // Inject the command provider into the container.
-        $this->container->register(LaramaCommandProvider::class, null, true);
+        $this->container->register(LaramaCommandProvider::class, [], true);
     }
 
     /**
