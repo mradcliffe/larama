@@ -25,9 +25,5 @@ install:
 script:
   - vendor/bin/phpunit --group larama,larama_functional --coverage-text=$TRAVIS_BUILD_DIR/coverage.txt
 
-  # Quick functional test of status.
-  - cd $LARAVELDIR
-  - $TESTDIR/app/larama status
-
 after_script:
   - head $TRAVIS_BUILD_DIR/coverage.txt
