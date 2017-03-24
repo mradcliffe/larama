@@ -35,7 +35,6 @@ install:
   # Create the migrations table at least.
   - ./artisan migrate:install
 
-after_install:
   - cd $TESTDIR
 
 script:
