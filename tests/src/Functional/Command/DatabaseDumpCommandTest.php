@@ -39,12 +39,15 @@ class DatabaseDumpCommandTest extends TestCase
     /**
      * Get the file name of the backup file.
      *
+     * @param bool $suffix
+     *   (Optional) Add suffix onto the file.
+     *
      * @return string
      *   The file name of the backup file.
      */
-    protected function getFilename()
+    protected function getFilename($suffix = true)
     {
-       return $this->gzip ? self::$result_file . '.gz' : self::$result_file;
+       return $this->gzip && $suffix ? self::$result_file . '.gz' : self::$result_file;
     }
 
     /**
@@ -55,15 +58,16 @@ class DatabaseDumpCommandTest extends TestCase
     public function testExecute()
     {
         $this->gzip = false;
-        $filename = $this->getFilename();
+        $filepath = getcwd() . $this->getFilename(false);
 
-        $input = new ArrayInput(['db:dump', '--result-file=backup.sql']);
+        $input = new ArrayInput(['db:dump', '--result-file="' . $filepath . '"']);
         $output = new StreamOutput(fopen('php://memory', 'w', false));
         $kernel = $this->getConsoleKernel();
         $status = $kernel->handle($input, $output);
         $kernel->terminate($input, $status);
 
-        $this->assertFileExists($filename);
+        $expectedpath = getcwd() . $this->getFilename();
+        $this->assertFileExists($expectedpath);
     }
 
     /**
@@ -72,15 +76,16 @@ class DatabaseDumpCommandTest extends TestCase
     public function testExecuteWithGzip()
     {
         $this->gzip = true;
-        $filename = $this->getFilename();
+        $filepath = getcwd() . $this->getFilename(false);
 
-        $input = new ArrayInput(['db:dump', '--gzip', '--result-file=backup.sql']);
+        $input = new ArrayInput(['db:dump', '--result-file="' . $filepath . '"']);
         $output = new StreamOutput(fopen('php://memory', 'w', false));
         $kernel = $this->getConsoleKernel();
         $status = $kernel->handle($input, $output);
         $kernel->terminate($input, $status);
 
-        $this->assertFileExists($filename);
+        $expectedpath = getcwd() . $this->getFilename();
+        $this->assertFileExists($expectedpath);
     }
 
     /**
