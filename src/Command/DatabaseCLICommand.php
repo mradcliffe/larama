@@ -8,6 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DatabaseCLICommand extends Command
 {
+    use DatabaseOptionsTrait;
 
     /**
      * {@inheritdoc}
@@ -17,6 +18,8 @@ class DatabaseCLICommand extends Command
         $this
             ->setName('db:cli')
             ->setDescription('Open a SQL command-line interface using application credentials.');
+
+        $this->addDatabaseOptions($this);
     }
 
     /**
@@ -28,12 +31,19 @@ class DatabaseCLICommand extends Command
 
         /** @var \Illuminate\Contracts\Container\Container $container */
         $container = $this->getApplication()->getLaravel();
-        /** @var \Illuminate\Config\Repository $config */
+        /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $container->make(\Illuminate\Config\Repository::class);
+        $default_connection = $config->get('database.default');
 
-        $driver = $config->get('database.default');
-        if ($driver === 'mysql') {
-            $command = $this->getMySQLCommand($config->get('database.connections.mysql'));
+        $connection = $this->getDatabaseConnection($input, $default_connection);
+        $options = $this->getDatabaseOptions($input, $config->get('database.connections.' . $connection), $connection === $default_connection);
+
+        if (!isset($options)) {
+            throw new \InvalidArgumentException('Database connection not found.');
+        }
+
+        if ($options['driver'] === 'mysql') {
+            $command = $this->getMySQLCommand($options);
         } else {
             throw new \InvalidArgumentException('Driver is not supported.');
         }
