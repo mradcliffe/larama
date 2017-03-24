@@ -76,9 +76,6 @@ class Larama extends Application
         if ($this->environment) {
             // Run the app through Laravel container.
             $kernel = $this->environment->loadKernel();
-            if (!is_a($kernel, '\Radcliffe\Larama\Console\Kernel')) {
-                // Add the larama commands to the new kernel.
-            }
 
             $status = $kernel->handle($input, $output);
             $kernel->terminate($input, $status);
