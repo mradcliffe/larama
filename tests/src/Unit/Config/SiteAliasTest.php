@@ -8,10 +8,11 @@ use Radcliffe\Larama\Config\SiteAlias;
 /**
  * Tests the site alias model.
  *
- * @group laraman
+ * @group larama
  */
 class SiteAliasTest extends TestCase
 {
+
     public function testSiteAlias()
     {
         $model = new SiteAlias('example', []);
