@@ -23,7 +23,9 @@ class DatabaseDumpCommandTest extends TestCase
     protected $gzip;
 
     /**
-     * {@inheritdoc}
+     * Get the console kernel from a site alias environment.
+     *
+     * @return \Illuminate\Contracts\Console\Kernel
      */
     protected function getConsoleKernel()
     {
@@ -31,7 +33,7 @@ class DatabaseDumpCommandTest extends TestCase
         $alias = SiteAlias::createFromDirectory('../laravel');
         $larama = new Larama('larama', '0.1');
         $environment = $larama->loadEnvironment($alias);
-        $kernel = $environment->loadKernel();
+        return $environment->loadKernel();
     }
 
     /**
