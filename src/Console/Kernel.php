@@ -3,7 +3,6 @@
 namespace Radcliffe\Larama\Console;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Larama console application kernel.
