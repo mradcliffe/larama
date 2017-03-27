@@ -59,7 +59,7 @@ class DatabaseCLICommand extends Command
     {
         $command = 'mysql --user=' . $config['username'] . ' --password=' . $config['password'];
         $command .= ' --host=' . $config['host'] . ' --port=' . $config['port'];
-        $command .= ' --binary-mode=1' . $config['database'];
+        $command .= ' --binary-mode=1 ' . $config['database'];
         return $command;
     }
 }
