@@ -15,6 +15,8 @@ use Symfony\Component\Console\Question\ConfirmationQuestion;
 class DatabaseDropCommand extends Command
 {
 
+    use DatabaseOptionsTrait;
+
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface
      */
@@ -29,6 +31,8 @@ class DatabaseDropCommand extends Command
             ->setName('db:drop')
             ->setDescription('Drop database tables and constraints.')
             ->addOption('yes', 'y', InputOption::VALUE_NONE, 'Skip confirmation and proceed.');
+
+        $this->addDatabaseOptions($this);
     }
 
     /**
@@ -48,13 +52,21 @@ class DatabaseDropCommand extends Command
 
         // Get the database connection.
         $container = $this->getApplication()->getLaravel();
-        /** @var \Illuminate\Database\DatabaseManager $database */
-        $database = $container->make(\Illuminate\Database\DatabaseManager::class);
-        /** @var \Illuminate\Database\Connection $connection */
-        $connection = $database->connection();
+        /** @var \Illuminate\Database\Connectors\ConnectionFactory $connectionFactory */
+        $connectionFactory = $container->make(\Illuminate\Database\Connectors\ConnectionFactory::class);
+        /** @var \Illuminate\Contracts\Config\Repository $config */
+        $config = $container->make(\Illuminate\Config\Repository::class);
+
+        $default_connection = $config->get('database.default');
+        $connection_name = $this->getDatabaseConnection($input, $default_connection);
 
         // Find and drop tables, views, etc...
         try {
+            $options = $this->getDatabaseOptions($input, $config->get('database.connections.' . $connection_name), $connection_name === $default_connection);
+
+            /** @var \Illuminate\Database\Connection $connection */
+            $connection = $connectionFactory->make($options);
+
             $connection->beginTransaction();
             if ($connection->getDriverName() === 'mysql') {
                 $this->dropMySQL($connection);
@@ -63,7 +75,9 @@ class DatabaseDropCommand extends Command
             }
             $connection->commit();
         } catch (\PDOException $e) {
-            $connection->rollBack();
+            if (isset($connection)) {
+                $connection->rollBack();
+            }
             $output->writeln($e->getMessage(), OutputInterface::OUTPUT_NORMAL);
         }
 

@@ -10,6 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DatabaseDumpCommand extends Command
 {
+    use DatabaseOptionsTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -20,6 +22,8 @@ class DatabaseDumpCommand extends Command
             ->setDescription('Dump the database into a SQL file.')
             ->addOption('gzip', '', InputOption::VALUE_NONE, 'Compress the database dump.')
             ->addOption('result-file', '', InputOption::VALUE_OPTIONAL, 'Provide a the full path to the filename to save the dump.');
+
+        $this->addDatabaseOptions($this);
     }
 
     /**
@@ -32,14 +36,21 @@ class DatabaseDumpCommand extends Command
 
         /** @var \Illuminate\Contracts\Container\Container $container */
         $container = $this->getApplication()->getLaravel();
-        /** @var \Illuminate\Config\Repository $config */
+        /** @var \Illuminate\Contracts\Config\Repository $config */
         $config = $container->make(\Illuminate\Config\Repository::class);
+        $default_connection = $config->get('database.default');
 
-        $driver = $config->get('database.default');
-        if ($driver === 'mysql') {
-            $command = $this->getMySQLDumpCommand($config->get('database.connections.' . $driver));
-        } elseif ($driver === 'pgsql') {
-            $command = $this->getPostgreSQLDumpCommand($config->get('database.connections.' . $driver));
+        $connection = $this->getDatabaseConnection($input, $default_connection);
+        $options = $this->getDatabaseOptions($input, $config->get('database.connections.' . $connection), $connection === $default_connection);
+
+        if (!isset($options)) {
+            throw new \InvalidArgumentException('Database connection not found.');
+        }
+
+        if ($options['driver'] === 'mysql') {
+            $command = $this->getMySQLDumpCommand($options);
+        } elseif ($options['driver'] === 'pgsql') {
+            $command = $this->getPostgreSQLDumpCommand($options);
         } else {
             throw new \InvalidArgumentException('Database driver not supported.');
         }
