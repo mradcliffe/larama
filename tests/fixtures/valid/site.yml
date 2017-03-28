@@ -1,5 +1,5 @@
 aliases:
     example:
-        webroot: '/var/www/www.example.com'
+        approot: '/var/www/www.example.com'
         fqdn: 'www.example.com'
         url: 'http://www.example.com'
