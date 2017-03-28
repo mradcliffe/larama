@@ -47,7 +47,7 @@ class Larama extends Application
     /**
      * {@inheritdoc}
      */
-    public function __construct($name = 'larama', $version = '0.1')
+    public function __construct($name = 'larama', $version = '0.2')
     {
         $this->loadConfiguration();
 
