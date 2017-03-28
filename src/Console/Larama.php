@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * Larama application class.
@@ -105,8 +106,7 @@ class Larama extends Application
 
         // Load and parse configuration files.
         foreach ($configs as $config_file) {
-            $info = Yaml::parse(file_get_contents($config_file));
-            $this->aliases = $this->mergeConfiguration($info);
+            $this->aliases = $this->mergeConfiguration($this->parseConfiguration($config_file));
         }
     }
 
@@ -133,14 +133,19 @@ class Larama extends Application
     /**
      * Get configuration (YAML) files.
      *
-     * @param $directory
+     * @param string $directory
      *   The directory to scan.
      * @return array
      *   An array of configuration files.
      */
-    protected function findConfigFiles($directory)
+    public function findConfigFiles($directory)
     {
         $configs = [];
+
+        if (!realpath($directory)) {
+            throw new \InvalidArgumentException('Configuration directory not found.');
+        }
+
         $files = scandir($directory);
         foreach ($files as $file_name) {
             $file_path = $directory . '/' . $file_name;
@@ -154,13 +159,13 @@ class Larama extends Application
     /**
      * Merge configuration into app configuration.
      *
-     * @param $info
+     * @param array $info
      *   Site alias configuration from configuration file.
      *
      * @return \Radcliffe\Larama\Config\SiteAlias[]
      *   An array of site aliases.
      */
-    protected function mergeConfiguration($info)
+    public function mergeConfiguration($info)
     {
         $aliases = $this->aliases;
 
@@ -172,6 +177,29 @@ class Larama extends Application
         }
 
         return $aliases;
+    }
+
+    /**
+     * Parse configuration file with YAML component.
+     *
+     * @param string $file_name
+     *   The file name to parse.
+     *
+     * @return array
+     *   YAML parsed into an array.
+     */
+    public function parseConfiguration($file_name)
+    {
+        try {
+            if (!realpath($file_name)) {
+                throw new \InvalidArgumentException('File not found.');
+            }
+            return Yaml::parse(file_get_contents($file_name));
+        } catch (\InvalidArgumentException $e) {
+            return [];
+        } catch (ParseException $e) {
+            return [];
+        }
     }
 
     /**
@@ -189,11 +217,11 @@ class Larama extends Application
     public function setConfigDirectories($directories = [])
     {
         $homedir = Utility::getHomeDirectory();
-        $this->configDir = $directories + [
+        $this->configDir = array_merge($directories, [
             '/etc/larama/config',
             $homedir . '/.larama/config',
             $homedir . '/.config/larama',
-        ];
+        ]);
 
         return $this->configDir;
     }
@@ -246,5 +274,18 @@ class Larama extends Application
     public function getAliases()
     {
         return $this->aliases;
+    }
+
+    /**
+     * Set the site aliases.
+     *
+     * @param array $aliases
+     *   Set site aliases to this array specifically.
+     */
+    public function setAliases(array $aliases)
+    {
+        $this->aliases = $aliases;
+
+        return $this;
     }
 }
