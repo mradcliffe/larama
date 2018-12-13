@@ -8,11 +8,11 @@ php:
 env:
   - LARAVEL=5.3
   - LARAVEL=5.4
-  - LARAVEL=master
+  - LARAVEL=dev-master
 
 matrix:
   allow_failures:
-    - env: LARAVEL=master
+    - env: LARAVEL=dev-master
     - php: 7.3
 
 sudo: false
