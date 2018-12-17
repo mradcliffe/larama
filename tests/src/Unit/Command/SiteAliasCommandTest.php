@@ -71,5 +71,4 @@ class SiteAliasCommandTest extends TestCase
 
         $this->assertEquals("No site aliases found.\n", $commandTester->getDisplay());
     }
-
 }

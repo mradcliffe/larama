@@ -5,7 +5,6 @@ namespace Radcliffe\Tests\Larama\Unit\Command;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
-
 /**
  * Tests the database options trait.
  *

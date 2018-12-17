@@ -58,5 +58,4 @@ class EnvironmentTest extends TestCase
         $env = new Environment($this->createAlias('../laravel'));
         $env->loadKernel();
     }
-
 }
