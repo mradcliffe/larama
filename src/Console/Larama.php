@@ -288,4 +288,19 @@ class Larama extends Application
 
         return $this;
     }
+
+    /**
+     * Tries to figure out the terminal dimensions based on the current environment.
+     *
+     * @return array
+     *   Array containing width and height.
+     */
+    public function getTerminalDimensions()
+    {
+        if (function_exists(parent::getTerminalDimensions)) {
+            return parent::getTerminalDimensions();
+        }
+
+        return [null, null];
+    }
 }
