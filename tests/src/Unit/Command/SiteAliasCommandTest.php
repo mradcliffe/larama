@@ -54,7 +54,7 @@ class SiteAliasCommandTest extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => 'site-alias'));
 
-        $this->assertEquals("\n * @example\n\n", $commandTester->getDisplay());
+        $this->assertEquals(" * @example\n", $commandTester->getDisplay());
     }
 
     /**
