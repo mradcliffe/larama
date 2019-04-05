@@ -1,6 +1,6 @@
 <?php
 
-namespace Radcliffe\Tests\Larama\Command;
+namespace Radcliffe\Tests\Larama\Functional\Command;
 
 use PHPUnit\Framework\TestCase;
 use Radcliffe\Larama\Config\SiteAlias;

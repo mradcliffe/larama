@@ -52,24 +52,24 @@ class AppStatusCommand extends Command
             $info['app-root'] = app_path();
             $info['fs-driver'] = $filesystem;
             $info['fs-root'] = $config->get('filesystems.disks.' . $filesystem . '.root');
-         }
+        }
 
-         // Get the default fields.
-         $info['console-name'] = $this->getApplication()->getName();
-         $info['console-version'] = $this->getApplication()->getVersion();
-         $info['php-exec'] = PHP_BINARY;
-         $ini_file = php_ini_loaded_file();
-         $info['php-conf'] = $ini_file ? : 'none';
-         $info['php-os'] = PHP_OS;
+        // Get the default fields.
+        $info['console-name'] = $this->getApplication()->getName();
+        $info['console-version'] = $this->getApplication()->getVersion();
+        $info['php-exec'] = PHP_BINARY;
+        $ini_file = php_ini_loaded_file();
+        $info['php-conf'] = $ini_file ? : 'none';
+        $info['php-os'] = PHP_OS;
 
-         $field_map = $this->getFieldMap();
-         $max_width = $this->getMaxPadWidth(array_keys($info), $field_map) + 1;
-         foreach ($info as $name => $value) {
-             $label = str_pad($field_map[$name], $max_width);
-             $output->writeln($label . ': ' . $value, OutputInterface::OUTPUT_PLAIN);
-         }
+        $field_map = $this->getFieldMap();
+        $max_width = $this->getMaxPadWidth(array_keys($info), $field_map) + 1;
+        foreach ($info as $name => $value) {
+            $label = str_pad($field_map[$name], $max_width);
+            $output->writeln($label . ': ' . $value, OutputInterface::OUTPUT_PLAIN);
+        }
 
-         return;
+        return;
     }
 
     /**

@@ -5,7 +5,6 @@ namespace Radcliffe\Larama\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class SiteAliasCommand extends Command
 {
@@ -41,15 +40,13 @@ EOF
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $style = new SymfonyStyle($input, $output);
         $aliases = $this->getApplication()->getAliases();
 
         if (!empty($aliases)) {
-            $style->listing(array_reduce($aliases, function (&$result, $alias) {
-                /** @var \Radcliffe\Larama\Config\SiteAlias $alias */
-                $result[] = sprintf("@%s", $alias->getAlias());
-                return $result;
-            }, []));
+            $elements = array_map(function ($element) {
+                return sprintf(' * @%s', $element->getAlias());
+            }, $aliases);
+            $output->writeln($elements);
         } else {
             $output->writeln('<info>No site aliases found.</info>');
         }

@@ -54,11 +54,11 @@ class LaramaTest extends TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-     public function testFindConfigFilesInvalid()
-     {
-         $app = new Larama();
-         $app->findConfigFiles(getcwd() . DIRECTORY_SEPARATOR . 'invalid');
-     }
+    public function testFindConfigFilesInvalid()
+    {
+        $app = new Larama();
+        $app->findConfigFiles(getcwd() . DIRECTORY_SEPARATOR . 'invalid');
+    }
 
     /**
      * Asserts that merge configuration is functional with various parameters.
