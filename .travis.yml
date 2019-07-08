@@ -2,7 +2,9 @@ language: php
 
 matrix:
   allow_failures:
-    - env: LARAVEL=dev-master
+    - env:
+      - LARAVEL=dev-master
+      - LARAVEL_DEFAULT_DB=laravel
     - php: 7.3
   include:
     -
@@ -58,8 +60,8 @@ install:
   - LARAVELDIR=$(pwd)
 
   # Configure laravel env to use travis credentials.
-  - sed -i 's#DB_USERNAME=([a-z]?)#DB_USERNAME=travis#' .env
-  - sed -i 's#DB_PASSWORD=([a-z]?)#DB_PASSWORD=#' .env
+  - sed -i 's#DB_USERNAME=[a-z]\?#DB_USERNAME=travis#' .env
+  - sed -i 's#DB_PASSWORD=[a-z]\?#DB_PASSWORD=#' .env
 
   # Create the migrations table at least.
   - ./artisan migrate:install
