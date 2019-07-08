@@ -47,7 +47,7 @@ services:
   - mysql
 
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS $LARAVEL_DEFAULT_DB'
+  - mysql -v < (echo "CREATE DATABASE IF NOT EXISTS ${LARAVEL_DEFAULT_DB};")
 
 install:
   - composer install
