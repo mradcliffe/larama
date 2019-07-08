@@ -2,40 +2,32 @@ language: php
 
 matrix:
   allow_failures:
-    - env:
-      - LARAVEL=dev-master
-      - LARAVEL_DEFAULT_DB=laravel
+    - env: LARAVEL=dev-master
     - php: 7.3
   include:
     -
       env:
         - LARAVEL=5.3
-        - LARAVEL_DEFAULT_DB=homestead
       php: 7.1
     -
       env:
         - LARAVEL=5.4
-        - LARAVEL_DEFAULT_DB=homestead
       php: 7.1
     -
       env:
         - LARAVEL=5.6
-        - LARAVEL_DEFAULT_DB=homestead
       php: 7.2
     -
       env:
         - LARAVEL=5.7
-        - LARAVEL_DEFAULT_DB=homestead
       php: 7.2
     -
       env:
         - LARAVEL=dev-master
-        - LARAVEL_DEFAULT_DB=laravel
       php: 7.2
     -
       env:
         - LARAVEL=dev-master
-        - LARAVEL_DEFAULT_DB=laravel
       php: 7.3
 
 sudo: false
@@ -47,7 +39,7 @@ services:
   - mysql
 
 before_install:
-  - mysql -v < echo "CREATE DATABASE IF NOT EXISTS ${LARAVEL_DEFAULT_DB};"
+  - mysql -v -e 'CREATE DATABASE IF NOT EXISTS laravel;'
 
 install:
   - composer install
@@ -62,6 +54,7 @@ install:
   # Configure laravel env to use travis credentials.
   - sed -i 's#^DB_USERNAME=[a-z]*$#DB_USERNAME=travis#' .env
   - sed -i 's#^DB_PASSWORD=[a-z]*$#DB_PASSWORD=#' .env
+  - sed -i 's#^DB_DATABASE=[a-z]*$#DB_DATABASE=laravel#' .env
 
   # Create the migrations table at least.
   - ./artisan migrate:install
